@@ -1,21 +1,14 @@
 uses
-
   Crt,
-  {$define usecrt}
-  {$define useacpisfalse}
-  classes, sysutils, strutils;
-
+  sysutils, strutils;
+  //classes won't work on 8086
 
 var
    Line1,Line2,Line3,Line4,Line5,Line6,Line7,Line8,Line9,Line10,Line11 : string;
-   c : string;
+   c : Char;
+   i : integer;
 
 Begin
-{$ifdef usecrt}
-{$ifdef useacpisfalse}
-SetUseACP(False);
-{$endif useacpisfalse}
-{$endif usecrt}
 
 TextColor(LightBlue);
 
@@ -33,19 +26,29 @@ Line9:='   77777777777777  7777777777777777777777   7777777777    777     777777
 Line10:='   77777777777777  7777777777777777777      7777777777     7      7777777777';
 Line11:='                           Personal Computer 5160 XT';
 
-
-Line1 := StringReplace(Line1, '7', c, [ rfReplaceAll ]);
-Line2 := StringReplace(Line2, '7', c, [ rfReplaceAll ]);
-Line3 := StringReplace(Line3, '7', c, [ rfReplaceAll ]);
-Line4 := StringReplace(Line4, '7', c, [ rfReplaceAll ]);
-Line5 := StringReplace(Line5, '7', c, [ rfReplaceAll ]);
-Line6 := StringReplace(Line6, '7', c, [ rfReplaceAll ]);
-Line7 := StringReplace(Line7, '7', c, [ rfReplaceAll ]);
-Line8 := StringReplace(Line8, '7', c, [ rfReplaceAll ]);
-Line9 := StringReplace(Line9, '7', c, [ rfReplaceAll ]);
-Line10 := StringReplace(Line10, '7', c, [ rfReplaceAll ]);
-Line11 := StringReplace(Line11, '7', c, [ rfReplaceAll ]);
-
+for i := length(Line1) downto 1 do
+       if Line1[i] = '7' then Line1[i] := c;
+for i := length(Line2) downto 1 do
+       if Line2[i] = '7'  then Line2[i] := c;
+for i := length(Line3) downto 1 do
+       if Line3[i] = '7'  then Line3[i] := c;
+for i := length(Line4) downto 1 do
+       if Line4[i] = '7'  then Line4[i] := c;
+for i := length(Line5) downto 1 do
+       if Line5[i] = '7'  then Line5[i] := c;
+for i := length(Line6) downto 1 do
+       if Line6[i] = '7'  then Line6[i] := c;
+for i := length(Line7) downto 1 do
+       if Line7[i] = '7'  then Line7[i] := c;
+for i := length(Line8) downto 1 do
+       if Line8[i] = '7'  then Line8[i] := c;
+for i := length(Line9) downto 1 do
+       if Line9[i] = '7'  then Line9[i] := c;
+for i := length(Line10) downto 1 do
+       if Line10[i] = '7'  then Line10[i] := c;
+for i := length(Line11) downto 1 do
+       if Line11[i] = '7'  then Line11[i] := c;
+	   
 ClrScr;
 writeln(Line1);
 writeln('');
@@ -68,5 +71,4 @@ writeln(Line10);
 writeln('');
 writeln(Line11);
 
-readln();
 end.
