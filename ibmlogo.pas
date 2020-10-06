@@ -49,7 +49,7 @@ for i := length(Line10) downto 1 do
 for i := length(Line11) downto 1 do
        if Line11[i] = '7'  then Line11[i] := c;
 	   
-ClrScr;
+//ClrScr;
 writeln(Line1);
 writeln('');
 writeln(Line2);
@@ -59,7 +59,6 @@ writeln(Line4);
 writeln('');
 writeln(Line5);
 writeln('');
-//writeln('');
 writeln(Line6);
 writeln('');
 writeln(Line7);
@@ -70,5 +69,7 @@ writeln('');
 writeln(Line10);
 writeln('');
 writeln(Line11);
+
+TextColor(White);
 
 end.
