@@ -103,7 +103,7 @@ int main(void)
 			}
 	   }
 	   else 
-	   if (curr_ch == '\n')
+	   if (curr_ch == '\n' || curr_ch == '\r') //ubuntu works with \n and ELKS works with \r
 	   {
 		   //printf("%s", "enter");
 		   printf("%s", "\r\n");
