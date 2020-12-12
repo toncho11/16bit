@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <termios.h>
+#include <stdlib.h> 
 
 char getch(void)
 {
@@ -34,17 +35,21 @@ char getch(void)
 
 int main(void)
 {
-    int curr_X=0;
-	int curr_Y=0;
+    int curr_X=1; //max 80
+	int curr_Y=1; //max 25
 
+	char* text = (char*)calloc(25 * 80, sizeof(char));
+	
 	clear();
-    printf(
-        "Enter your number in the box below\n"
-        "+-----------------+\n"
-        "|                 |\n"
-        "+-----------------+\n"
+    sprintf(text, "%s","Enter your number in the box below\n+-----------------+\n|                 |\n+-----------------+\n"
     );
-    gotoxy(2, 3);
+	
+	printf("%s",text);
+	
+	curr_X = 10;
+	curr_Y = 3;
+	
+    gotoxy(curr_X, curr_Y);
 	
     while(1)
 	{
@@ -58,18 +63,42 @@ int main(void)
 				case 'A':
 					// code for arrow up
 					printf("\033[1A"); // Move up X lines;
+					if (curr_Y>1) curr_Y = curr_Y - 1;
+					
+					gotoxy(1, 25);
+					printf("[%d | %d]  ",curr_X,curr_Y);
+					gotoxy(curr_X, curr_Y);
+					
 					break;
 				case 'B':
 					// code for arrow down
 					printf("\033[1B"); // Move down X lines;
+					if (curr_Y<25) curr_Y = curr_Y + 1;
+					
+					gotoxy(1, 25);
+					printf("[%d | %d]  ",curr_X,curr_Y);
+					gotoxy(curr_X, curr_Y);
+					
 					break;
 				case 'C':
 					// code for arrow right
 					printf("\033[1C"); // Move right X column;
+					if (curr_X<80) curr_X = curr_X + 1;
+					
+					gotoxy(1, 25);
+					printf("[%d | %d]  ",curr_X,curr_Y);
+					gotoxy(curr_X, curr_Y);
+					
 					break;
 				case 'D':
 					// code for arrow left
 					printf("\033[1D"); // Move left X column;
+					if (curr_X>1) curr_X = curr_X - 1;
+					
+					gotoxy(1, 25);
+					printf("[%d | %d]  ",curr_X,curr_Y);
+					gotoxy(curr_X, curr_Y);
+					
 					break;
 			}
 	   }
@@ -78,7 +107,13 @@ int main(void)
 	   {
 		   //printf("%s", "enter");
 		   printf("%s", "\r\n");
-	   }
+		   if (curr_Y<25) curr_Y = curr_Y + 1;
+		   curr_X = 1;
+		   
+		   gotoxy(1, 25);
+		   printf("[%d | %d]  ",curr_X,curr_Y);
+		   gotoxy(curr_X, curr_Y);
+	   } 
 	   else
 	   {
 	       printf("%c", curr_ch);
