@@ -73,6 +73,12 @@ int main(void)
 					break;
 			}
 	   }
+	   else 
+	   if (curr_ch == '\n')
+	   {
+		   //printf("%s", "enter");
+		   printf("%s", "\r\n");
+	   }
 	   else
 	   {
 	       printf("%c", curr_ch);
