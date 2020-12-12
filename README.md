@@ -11,5 +11,5 @@ This will produce a 16 bit executable.
 ## Tiny editor ##
 It compiles on Linux. It can be used in the ELKS Linux project.
 This is how to compile it for ELKS with cross compiler:
-`$ ./cross/bin/ia16-elf-gcc tinyedit.c -o tinyedit -melks -mcmodel=small`
+```$ ./cross/bin/ia16-elf-gcc tinyedit.c -o tinyedit -melks -mcmodel=small```
 
