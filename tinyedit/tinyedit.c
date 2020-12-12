@@ -3,6 +3,19 @@
 #include <termios.h>
 #include <stdlib.h> 
 
+#define clear() printf("\033[H\033[J")
+#define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
+//printf("\033[XA"); // Move up X lines;
+//printf("\033[XB"); // Move down X lines;
+//printf("\033[XC"); // Move right X column;
+//printf("\033[XD"); // Move left X column;
+
+
+#define SHOW_POS
+
+int curr_X=1; //max 80
+int curr_Y=1; //max 25
+	
 char getch(void)
 {
     char buf = 0;
@@ -26,28 +39,58 @@ char getch(void)
     return buf;
  }
  
-#define clear() printf("\033[H\033[J")
-#define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
-//printf("\033[XA"); // Move up X lines;
-//printf("\033[XB"); // Move down X lines;
-//printf("\033[XC"); // Move right X column;
-//printf("\033[XD"); // Move left X column;
-
-int main(void)
+ void showpos(void)
+ {
+	 gotoxy(1, 25);
+	 printf("[%d | %d]  ",curr_X,curr_Y);
+	 gotoxy(curr_X, curr_Y);
+ }
+ 
+int main(int argc, char *argv[])
 {
-    int curr_X=1; //max 80
-	int curr_Y=1; //max 25
-
 	char* text = (char*)calloc(25 * 80, sizeof(char));
 	
-	clear();
-    sprintf(text, "%s","Enter your number in the box below\n+-----------------+\n|                 |\n+-----------------+\n"
-    );
+	//clear();
+    //sprintf(text, "%s","Enter your number in the box below\n+-----------------+\n|                 |\n+-----------------+\n");
+	if ( argc != 2 )
+    {
+        printf( "usage: %s filename", argv[0] );
+    }
+    else
+    {
+        // We assume argv[1] is a filename to open
+        FILE *file = fopen( argv[1], "r" );
+
+        /* fopen returns 0, the NULL pointer, on failure */
+        if ( file == 0 )
+        {
+            printf( "Could not open file\n" );
+			exit(1);
+        }
+        else
+        {
+            fseek( file , 0L , SEEK_END);
+            int lSize = ftell( file );
+            rewind( file );
+
+/* allocate memory for entire content */
+//buffer = calloc( 1, lSize+1 );
+//if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
+
+            /* copy the file into the buffer */
+			fread( text , lSize, 1 , file);
+            //if( lSize!=fread( text , lSize, 1 , file) ) //2000!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//{
+             //    fclose(file);free(text);fputs("entire read fails\n",stderr);exit(1);
+			//}
+            //fclose( file );
+        }
+    }
 	
 	printf("%s",text);
 	
-	curr_X = 10;
-	curr_Y = 3;
+	curr_X = 1;
+	curr_Y = 1;
 	
     gotoxy(curr_X, curr_Y);
 	
@@ -65,9 +108,9 @@ int main(void)
 					printf("\033[1A"); // Move up X lines;
 					if (curr_Y>1) curr_Y = curr_Y - 1;
 					
-					gotoxy(1, 25);
-					printf("[%d | %d]  ",curr_X,curr_Y);
-					gotoxy(curr_X, curr_Y);
+					#ifdef SHOW_POS
+					showpos();
+					#endif
 					
 					break;
 				case 'B':
@@ -75,9 +118,9 @@ int main(void)
 					printf("\033[1B"); // Move down X lines;
 					if (curr_Y<25) curr_Y = curr_Y + 1;
 					
-					gotoxy(1, 25);
-					printf("[%d | %d]  ",curr_X,curr_Y);
-					gotoxy(curr_X, curr_Y);
+					#ifdef SHOW_POS
+					showpos();
+					#endif
 					
 					break;
 				case 'C':
@@ -85,9 +128,9 @@ int main(void)
 					printf("\033[1C"); // Move right X column;
 					if (curr_X<80) curr_X = curr_X + 1;
 					
-					gotoxy(1, 25);
-					printf("[%d | %d]  ",curr_X,curr_Y);
-					gotoxy(curr_X, curr_Y);
+					#ifdef SHOW_POS
+					showpos();
+					#endif
 					
 					break;
 				case 'D':
@@ -95,9 +138,9 @@ int main(void)
 					printf("\033[1D"); // Move left X column;
 					if (curr_X>1) curr_X = curr_X - 1;
 					
-					gotoxy(1, 25);
-					printf("[%d | %d]  ",curr_X,curr_Y);
-					gotoxy(curr_X, curr_Y);
+					#ifdef SHOW_POS
+					showpos();
+					#endif
 					
 					break;
 			}
