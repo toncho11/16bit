@@ -3,7 +3,12 @@
 #include <termios.h>
 #include <stdlib.h> 
 
-#define clear() printf("\033[H\033[J")
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+//#define clear() printf("\033[H\033[J")
+#define CLEARSEQ "\x1b[H\x1b[2J"
 #define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
 //printf("\033[XA"); // Move up X lines;
 //printf("\033[XB"); // Move down X lines;
@@ -15,7 +20,12 @@
 
 int curr_X=1; //max 80
 int curr_Y=1; //max 25
-	
+
+void clear(void)
+{
+	 write(STDOUT_FILENO, CLEARSEQ, 7);
+}
+
 char getch(void)
 {
     char buf = 0;
@@ -50,7 +60,7 @@ int main(int argc, char *argv[])
 {
 	char* text = (char*)calloc(25 * 80, sizeof(char));
 	
-	//clear();
+	clear();
     //sprintf(text, "%s","Enter your number in the box below\n+-----------------+\n|                 |\n+-----------------+\n");
 	if ( argc != 2 )
     {
@@ -69,9 +79,14 @@ int main(int argc, char *argv[])
         }
         else
         {
-            fseek( file , 0L , SEEK_END);
-            int lSize = ftell( file );
-            rewind( file );
+			int fd = fileno(file); 
+			struct stat buf;
+			fstat(fd, &buf);
+			int lSize = buf.st_size;
+
+            // fseek( file , 0L , SEEK_END);
+            // int lSize = ftell( file );
+            // rewind( file ); //fseek(fp, 0L, SEEK_SET);
 
 /* allocate memory for entire content */
 //buffer = calloc( 1, lSize+1 );
