@@ -98,12 +98,12 @@ int main(int argc, char *argv[])
 
             /* copy the file into the buffer */
 			fread( text , lSize, 1 , file);
-                        text[lSize] = '\0';
+            text[lSize] = '\0';
             //if( lSize!=fread( text , lSize, 1 , file) ) //2000!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//{
              //    fclose(file);free(text);fputs("entire read fails\n",stderr);exit(1);
 			//}
-            //fclose( file );
+            fclose( file );
         }
     }
 	
@@ -121,7 +121,8 @@ int main(int argc, char *argv[])
 	   if (curr_ch == '\033')
 	   {    // if the first value is esc
             getch(); // skip the [
-			switch(getch())
+			char c = getch();
+			switch(c)
 			{ // the real value
 				case 'A':
 					// code for arrow up
@@ -163,6 +164,8 @@ int main(int argc, char *argv[])
 					#endif
 					
 					break;
+				default: 
+				    printf("%s %c","not handled:",c); //for debug purposes
 			}
 	   }
 	   else 
@@ -177,7 +180,7 @@ int main(int argc, char *argv[])
 		   printf("[%d | %d]  ",curr_X,curr_Y);
 		   gotoxy(curr_X, curr_Y);
 	   }
-           else if (curr_ch == 127 || curr_ch == '\b') //detect backspace (127 on Ubuntu, '\b' on ELKS) 
+           else if (curr_ch == 127 || curr_ch == '\b') //detect backspace (127 on Ubuntu, '\b' on ELKS) and move text right
            {
              if (curr_X != 1)
              {  //char c=getch();
@@ -215,11 +218,29 @@ int main(int argc, char *argv[])
                current_line_end--; //because we deleted one character
              }
            } 
-	   else
-	   {
-               text[curr_X - 1] = curr_ch;
-	       printf("%c", curr_ch);
-	   }
+	   else //print character and move all characters right
+           {
+             if (curr_X != 80)
+             {  
+               if (current_line_end == 0)
+                  while ( text[current_line_end] != '\r' && text[current_line_end] !='\0' && text[current_line_end]!='\n')
+                    current_line_end++;
+
+               memcpy(text+curr_X, text+curr_X - 1, current_line_end - curr_X + 1);
+
+               //add spacebar
+               text[curr_X-1] = curr_ch;//' ';
+               text[current_line_end + 1] = '\0'; 
+
+               //print at new position
+               printf("%s", text+curr_X-1);
+
+			   curr_X = curr_X + 1;
+               gotoxy(curr_X, curr_Y);
+               
+               current_line_end++; //because we added one character
+             }
+           } 
     }
 	
     return 0;
