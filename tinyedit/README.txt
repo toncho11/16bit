@@ -9,3 +9,16 @@ Features:
 
 - a working backspace (yes, it is not a small thing)
 - show position of cursor (option enabled from command line before start)
+
+What is working now:
+
+- load file
+- arrows
+- backspace for 1 line file
+
+What is missing:
+
+- correct handling of text that is more than one line
+- spacebar and characters moves text right (instead of overwrite)
+- savefile
+- ctrl-S, ctrl-X
