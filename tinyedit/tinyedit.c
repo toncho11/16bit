@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 		   printf("[%d | %d]  ",curr_X,curr_Y);
 		   gotoxy(curr_X, curr_Y);
 	   }
-           else if (curr_ch == 127) 
+           else if (curr_ch == 127 || curr_ch == '\b') //detect backspace (127 on Ubuntu, '\b' on ELKS) 
            {
              if (curr_X != 1)
              {  //char c=getch();
