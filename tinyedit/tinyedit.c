@@ -7,6 +7,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <string.h>
+
 //#define clear() printf("\033[H\033[J")
 #define CLEARSEQ "\x1b[H\x1b[2J"
 #define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
@@ -20,6 +22,8 @@
 
 int curr_X=1; //max 80
 int curr_Y=1; //max 25
+
+int current_line_end = 0;
 
 void clear(void)
 {
@@ -94,6 +98,7 @@ int main(int argc, char *argv[])
 
             /* copy the file into the buffer */
 			fread( text , lSize, 1 , file);
+                        text[lSize] = '\0';
             //if( lSize!=fread( text , lSize, 1 , file) ) //2000!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//{
              //    fclose(file);free(text);fputs("entire read fails\n",stderr);exit(1);
@@ -171,9 +176,48 @@ int main(int argc, char *argv[])
 		   gotoxy(1, 25);
 		   printf("[%d | %d]  ",curr_X,curr_Y);
 		   gotoxy(curr_X, curr_Y);
-	   } 
+	   }
+           else if (curr_ch == 127) 
+           {
+             if (curr_X != 1)
+             {  //char c=getch();
+               //printf("%s","back");
+               //c=getch();
+
+               if (current_line_end == 0)
+                  while ( text[current_line_end] != '\r' && text[current_line_end] !='\0' && text[current_line_end]!='\n')
+                    current_line_end++;
+               
+               //printf("%d",current_line_end);
+               
+               //printf("%c",'\b'); //move back to output the new text
+               curr_X = curr_X - 1;
+               gotoxy(curr_X,curr_Y);
+
+               memcpy(text+curr_X-1, text+curr_X, current_line_end - curr_X);
+
+               gotoxy(curr_X, curr_Y);
+
+               //add extra space to delete last character
+               text[current_line_end - 1] = ' ';
+               text[current_line_end] = '\0'; 
+
+               //print at new position
+               printf("%s", text+curr_X-1);
+               
+               //remove space
+               text[current_line_end - 1] = '\0';
+               
+               gotoxy(curr_X, curr_Y);
+               //if (c == 'H')
+               //printf("%s","batman");
+               
+               current_line_end--; //because we deleted one character
+             }
+           } 
 	   else
 	   {
+               text[curr_X - 1] = curr_ch;
 	       printf("%c", curr_ch);
 	   }
     }
