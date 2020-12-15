@@ -37,6 +37,9 @@ char getch(void)
     fflush(stdout);
     if(tcgetattr(0, &old) < 0)
         perror("tcsetattr()");
+
+    old.c_iflag &= ~(IXON); //disable Ctrl + S, Ctrl + Q
+
     old.c_lflag &= ~ICANON;
     old.c_lflag &= ~ECHO;
     old.c_cc[VMIN] = 1;
@@ -219,6 +222,16 @@ int main(int argc, char *argv[])
              }
            } 
 	   else //print character and move all characters right
+	   if (curr_ch == 17) //CTRL + Q
+	   {
+		   printf("%s", "CTRL + Q");
+	   }
+	   else 
+	   if (curr_ch == 19) //CTRL + S 
+	   {
+		   printf("%s", "CTRL + S");
+	   }
+	   else
            {
              if (curr_X != 80)
              {  

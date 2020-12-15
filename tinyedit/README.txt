@@ -23,3 +23,5 @@ What is missing:
 - correct handling of text that is more than one line
 - savefile
 - ctrl-S, ctrl-X
+
+Good article: https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
