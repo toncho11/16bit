@@ -25,6 +25,7 @@ int curr_Y = 1; //max 25
 int line_ends[26];
 int text_size = 0;
 int is_linux_file = 1; //only '\n'
+int buff_X = -1;
 
 void clear(void)
 {
@@ -148,40 +149,76 @@ int main(int argc, char *argv[])
 			char c = getch();
 			switch(c)
 			{ // the real value
-				case 'A':
-					// code for arrow up
+				case 'A': // code for arrow up
+
+				    if (line_ends[curr_Y-1] == line_ends[curr_Y-2] + 1)
+					{
+						if (curr_Y>1) curr_Y = curr_Y - 1;
+						curr_X = 1;
+						gotoxy(curr_X,curr_Y);
+					}
+					else
+					{
 					printf("\033[1A"); // Move up X lines;
-					if (curr_Y>1) curr_Y = curr_Y - 1;
+					   if (curr_Y>1) curr_Y = curr_Y - 1;
+					}
+					#ifdef SHOW_POS
+					showpos();
+					#endif
+					
+					break;
+				case 'B': // code for arrow down
+					
+					//printf("\033[1B"); // Move down X lines;
+					//if (curr_Y<25) curr_Y = curr_Y + 1;
+					
+					if (line_ends[curr_Y+1] == line_ends[curr_Y] + 1)
+					{
+						if (curr_Y<25) curr_Y = curr_Y + 1;
+						curr_X = 1;
+						gotoxy(curr_X,curr_Y);
+					}
+					else
+					{
+					   printf("\033[1B"); // Move down X lines;
+					   if (curr_Y<25) curr_Y = curr_Y + 1;
+					}
 					
 					#ifdef SHOW_POS
 					showpos();
 					#endif
 					
 					break;
-				case 'B':
-					// code for arrow down
-					printf("\033[1B"); // Move down X lines;
-					if (curr_Y<25) curr_Y = curr_Y + 1;
+				case 'C': // code for arrow right
 					
+					if (curr_X + 1 == line_ends[curr_Y])
+                    {
+						if (curr_Y<25) curr_Y = curr_Y + 1;
+						gotoxy(1,curr_Y);
+					}
+                    else
+					{						
+					   printf("\033[1C"); // Move right X column;
+					   if (curr_X<80) curr_X = curr_X + 1;
+					}					
 					#ifdef SHOW_POS
 					showpos();
 					#endif
 					
 					break;
-				case 'C':
-					// code for arrow right
-					printf("\033[1C"); // Move right X column;
-					if (curr_X<80) curr_X = curr_X + 1;
+				case 'D': // code for arrow left
 					
-					#ifdef SHOW_POS
-					showpos();
-					#endif
-					
-					break;
-				case 'D':
-					// code for arrow left
-					printf("\033[1D"); // Move left X column;
-					if (curr_X>1) curr_X = curr_X - 1;
+					if (curr_X == 1 && curr_Y > 1)
+                    {
+						curr_Y = curr_Y - 1;
+						curr_X = line_ends[curr_Y-1] - 1;
+						gotoxy(curr_X,curr_Y);
+					}
+                    else
+					{	
+					  printf("\033[1D"); // Move left X column;
+					  if (curr_X>1) curr_X = curr_X - 1;
+					}
 					
 					#ifdef SHOW_POS
 					showpos();
@@ -233,6 +270,11 @@ int main(int argc, char *argv[])
 			   text_size--;
 			   text[text_size]='\0';
              }
+			 else
+			 {
+			   int start_text_pos = line_ends[curr_Y-1];
+               memcpy(text + start_text_pos, text + start_text_pos, text_size - start_text_pos);
+			 }
            } 
 	   else //print character and move all characters right
 	   if (curr_ch == 17) //CTRL + Q
@@ -242,7 +284,7 @@ int main(int argc, char *argv[])
 	   else 
 	   if (curr_ch == 19) //CTRL + S 
 	   {
-		    printf("%s", "CTRL + S");
+		    //printf("%s", "CTRL + S");
 		   
 		    FILE *f = fopen("file2.txt", "w");
 			if (f == NULL)
@@ -258,6 +300,7 @@ int main(int argc, char *argv[])
 			fprintf(f, "\ntext size %d", text_size);
 			fprintf(f, "\nline1 %d", line_ends[1]);
 			fprintf(f, "\nline2 %d", line_ends[2]);
+			fprintf(f, "\nline3 %d", line_ends[3]);
 
 			fclose(f);
 	   }
