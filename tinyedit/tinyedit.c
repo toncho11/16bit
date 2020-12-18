@@ -147,19 +147,24 @@ int main(int argc, char *argv[])
 	   {    // if the first value is esc
             getch(); // skip the [
 			char c = getch();
+			
+			//int x_now = line_ends[curr_Y-1] + curr_X;
+			
 			switch(c)
 			{ // the real value
-				case 'A': // code for arrow up
+				case 'A': // code for arrow up - OK
 
-				    if (line_ends[curr_Y-1] == line_ends[curr_Y-2] + 1)
+				    //printf("%s","A");
+					
+				    if (line_ends[curr_Y - 2] + curr_X > line_ends[curr_Y-1])
 					{
+						curr_X = line_ends[curr_Y  - 1] - line_ends[curr_Y  - 2];
 						if (curr_Y>1) curr_Y = curr_Y - 1;
-						curr_X = 1;
 						gotoxy(curr_X,curr_Y);
 					}
 					else
 					{
-					printf("\033[1A"); // Move up X lines;
+					   printf("\033[1A"); // Move up X lines;
 					   if (curr_Y>1) curr_Y = curr_Y - 1;
 					}
 					#ifdef SHOW_POS
@@ -167,15 +172,16 @@ int main(int argc, char *argv[])
 					#endif
 					
 					break;
-				case 'B': // code for arrow down
+				case 'B': // code for arrow down - OK
 					
+					//printf("%s","B");
 					//printf("\033[1B"); // Move down X lines;
 					//if (curr_Y<25) curr_Y = curr_Y + 1;
 					
-					if (line_ends[curr_Y+1] == line_ends[curr_Y] + 1)
+					if (line_ends[curr_Y + 1] + 1 < line_ends[curr_Y] + curr_X)
 					{
+						curr_X = line_ends[curr_Y +1 ] - line_ends[curr_Y] ;
 						if (curr_Y<25) curr_Y = curr_Y + 1;
-						curr_X = 1;
 						gotoxy(curr_X,curr_Y);
 					}
 					else
@@ -191,27 +197,35 @@ int main(int argc, char *argv[])
 					break;
 				case 'C': // code for arrow right
 					
-					if (curr_X + 1 == line_ends[curr_Y])
+					//printf("%s","C");
+					if (line_ends[curr_Y - 1] + curr_X == line_ends[curr_Y]) //we are currently at the new line and the user clicked to go right
                     {
 						if (curr_Y<25) curr_Y = curr_Y + 1;
-						gotoxy(1,curr_Y);
+						curr_X = 1;
+						gotoxy(curr_X,curr_Y);
 					}
                     else
 					{						
-					   printf("\033[1C"); // Move right X column;
-					   if (curr_X<80) curr_X = curr_X + 1;
+					   //printf("\033[1C"); // Move right X column;
+					   if (curr_X<80) 
+					   {
+						   curr_X = curr_X + 1;
+						   gotoxy(curr_X, curr_Y);
+					   }
+					   
 					}					
 					#ifdef SHOW_POS
 					showpos();
 					#endif
 					
 					break;
-				case 'D': // code for arrow left
+				case 'D': // code for arrow left - OK
 					
+					//printf("%s","D");
 					if (curr_X == 1 && curr_Y > 1)
                     {
+						curr_X = line_ends[curr_Y-1] - line_ends[curr_Y-2];
 						curr_Y = curr_Y - 1;
-						curr_X = line_ends[curr_Y-1] - 1;
 						gotoxy(curr_X,curr_Y);
 					}
                     else
@@ -301,6 +315,7 @@ int main(int argc, char *argv[])
 			fprintf(f, "\nline1 %d", line_ends[1]);
 			fprintf(f, "\nline2 %d", line_ends[2]);
 			fprintf(f, "\nline3 %d", line_ends[3]);
+			
 
 			fclose(f);
 	   }
