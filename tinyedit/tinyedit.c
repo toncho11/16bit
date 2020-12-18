@@ -127,6 +127,7 @@ int main(int argc, char *argv[])
 			
 		}
 	}
+	for (i = line; i< 26; i++) line_ends[i] = -1;
 	
 	if (line_ends[0] == '\r') is_linux_file = 0; //0 means DOS file
 	//printf("\n %d\n",is_linux_file);
@@ -155,17 +156,19 @@ int main(int argc, char *argv[])
 				case 'A': // code for arrow up - OK
 
 				    //printf("%s","A");
-					
-				    if (line_ends[curr_Y - 2] + curr_X > line_ends[curr_Y-1])
+					if (curr_Y>1)
 					{
-						curr_X = line_ends[curr_Y  - 1] - line_ends[curr_Y  - 2];
-						if (curr_Y>1) curr_Y = curr_Y - 1;
-						gotoxy(curr_X,curr_Y);
-					}
-					else
-					{
-					   printf("\033[1A"); // Move up X lines;
-					   if (curr_Y>1) curr_Y = curr_Y - 1;
+					    int x;
+						if (curr_Y == 2) x = curr_X;
+						else x = line_ends[curr_Y - 2] + curr_X;
+						
+						if ( x > line_ends[curr_Y-1])
+						{
+							curr_X = line_ends[curr_Y  - 1] - line_ends[curr_Y  - 2];
+						}
+						
+						curr_Y = curr_Y - 1;
+					    gotoxy(curr_X,curr_Y);
 					}
 					#ifdef SHOW_POS
 					showpos();
@@ -176,18 +179,17 @@ int main(int argc, char *argv[])
 					
 					//printf("%s","B");
 					//printf("\033[1B"); // Move down X lines;
-					//if (curr_Y<25) curr_Y = curr_Y + 1;
 					
-					if (line_ends[curr_Y + 1] + 1 < line_ends[curr_Y] + curr_X)
+					if (curr_Y<26 && line_ends[curr_Y+1] != -1)
 					{
-						curr_X = line_ends[curr_Y +1 ] - line_ends[curr_Y] ;
-						if (curr_Y<25) curr_Y = curr_Y + 1;
+						if (line_ends[curr_Y + 1] < line_ends[curr_Y] + curr_X) //problem
+						{
+							//curr_X = line_ends[curr_Y + 1] - line_ends[curr_Y] ;
+							curr_X = line_ends[curr_Y + 1] - line_ends[curr_Y] ;
+						}
+						
+						curr_Y = curr_Y + 1;
 						gotoxy(curr_X,curr_Y);
-					}
-					else
-					{
-					   printf("\033[1B"); // Move down X lines;
-					   if (curr_Y<25) curr_Y = curr_Y + 1;
 					}
 					
 					#ifdef SHOW_POS
@@ -198,7 +200,7 @@ int main(int argc, char *argv[])
 				case 'C': // code for arrow right
 					
 					//printf("%s","C");
-					if (line_ends[curr_Y - 1] + curr_X == line_ends[curr_Y]) //we are currently at the new line and the user clicked to go right
+					if (line_ends[curr_Y - 1] + curr_X == line_ends[curr_Y] && line_ends[curr_Y+1] != -1 ) //we are currently at the new line and the user clicked to go right
                     {
 						if (curr_Y<25) curr_Y = curr_Y + 1;
 						curr_X = 1;
@@ -206,8 +208,7 @@ int main(int argc, char *argv[])
 					}
                     else
 					{						
-					   //printf("\033[1C"); // Move right X column;
-					   if (curr_X<80) 
+					   if (curr_X<80 && line_ends[curr_Y -1] + curr_X < line_ends[curr_Y] ) 
 					   {
 						   curr_X = curr_X + 1;
 						   gotoxy(curr_X, curr_Y);
@@ -314,7 +315,7 @@ int main(int argc, char *argv[])
 			fprintf(f, "\ntext size %d", text_size);
 			fprintf(f, "\nline1 %d", line_ends[1]);
 			fprintf(f, "\nline2 %d", line_ends[2]);
-			fprintf(f, "\nline3 %d", line_ends[3]);
+			fprintf(f, "\nline3 %d", line_ends[12]);
 			
 
 			fclose(f);
