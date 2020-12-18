@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
 					
 					if (curr_Y<26 && line_ends[curr_Y+1] != -1)
 					{
-						if (line_ends[curr_Y + 1] < line_ends[curr_Y] + curr_X) //problem
+						if (line_ends[curr_Y + 1] < line_ends[curr_Y] + curr_X)
 						{
 							//curr_X = line_ends[curr_Y + 1] - line_ends[curr_Y] ;
 							curr_X = line_ends[curr_Y + 1] - line_ends[curr_Y] ;
@@ -327,8 +327,9 @@ int main(int argc, char *argv[])
   		       int start_text_pos = line_ends[curr_Y-1] + curr_X;
 			   memcpy(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
 
+			   //if (curr_X == 1) line_ends[i] == //PROBLEM
 			   for (int i=curr_Y; i< 26; i++)
-				   line_ends[i]++; 
+				   if (line_ends[i]!= -1) line_ends[i]++; 
 			   
                //add character
                text[start_text_pos] = curr_ch;
@@ -336,12 +337,12 @@ int main(int argc, char *argv[])
 
                //print at new position
                printf("%s", text + start_text_pos);
+			   
+			   text[line_ends[curr_Y]] = '\n';
 
 			   curr_X = curr_X + 1;
                gotoxy(curr_X, curr_Y);
                
-			   text[line_ends[curr_Y]] = '\n';
-			   
 			   text_size++;
 			   text[text_size]='\0';
              }
