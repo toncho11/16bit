@@ -121,8 +121,12 @@ int main(int argc, char *argv[])
 	}
 	for (i = line; i< 26; i++) line_ends[i] = -1;
 	
-	if (line_ends[0] == '\r') is_linux_file = 0; //0 means DOS file
-	//printf("\n %d\n",is_linux_file); //for debug
+	if (line_ends[0] > 0 && line_ends[0]-1 == '\r') 
+	{
+		is_linux_file = 0; //0 means DOS file
+		//printf("\n %d\n",is_linux_file); //for debug
+		printf("%s","This looks like a DOS file. DOS files are not supported. Exiting ...");
+	}
 	
 	printf("%s",text);
 	
@@ -318,7 +322,6 @@ int main(int argc, char *argv[])
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
 		   memcpy(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
 
-		   //if (curr_X == 1) line_ends[i] == //PROBLEM
 		   for (int i=curr_Y; i< 26; i++)
 			   if (line_ends[i]!= -1) line_ends[i]++; 
 		   
