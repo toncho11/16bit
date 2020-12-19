@@ -156,9 +156,9 @@ int main(int argc, char *argv[])
 						if (curr_Y == 2) x = curr_X;
 						else x = line_ends[curr_Y - 2] + curr_X;
 						
-						if ( x > line_ends[curr_Y-1])
+						if ( x > line_ends[curr_Y - 1])
 						{
-							curr_X = line_ends[curr_Y  - 1] - line_ends[curr_Y  - 2];
+							curr_X = line_ends[curr_Y  - 1] - line_ends[curr_Y - 2];
 						}
 						
 						curr_Y = curr_Y - 1;
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 					}
                     else
 					{						
-					   if (curr_X<80 && line_ends[curr_Y -1] + curr_X < line_ends[curr_Y] ) 
+					   if (curr_X<80 && line_ends[curr_Y - 1] + curr_X < line_ends[curr_Y] ) 
 					   {
 						   curr_X = curr_X + 1;
 						   gotoxy(curr_X, curr_Y);
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 		 if (curr_X != 1)
 		 { 
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
-		   memcpy(text + start_text_pos - 1, text + start_text_pos, text_size - start_text_pos);
+		   memmove(text + start_text_pos - 1, text + start_text_pos, text_size - start_text_pos);
 
 		   //add extra space to delete last character
 		   text[line_ends[curr_Y] - 1] = ' ';
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 		 else
 		 {
 		   int start_text_pos = line_ends[curr_Y-1];
-		   memcpy(text + start_text_pos, text + start_text_pos, text_size - start_text_pos);
+		   memmove(text + start_text_pos, text + start_text_pos, text_size - start_text_pos);
 		 }
 	   } //end backspace 
        else 
@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
 		 { 
            //handles Y=1 correctly because Y0 = -1 and we get: -1 + curr_X = curr_X - 1  
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
-		   memcpy(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
+		   memmove(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
 
 		   for (int i=curr_Y; i< 26; i++)
 			   if (line_ends[i]!= -1) line_ends[i]++; 
