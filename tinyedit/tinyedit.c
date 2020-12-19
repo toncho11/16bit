@@ -121,11 +121,12 @@ int main(int argc, char *argv[])
 	}
 	for (i = line; i< 26; i++) line_ends[i] = -1;
 	
-	if (line_ends[0] > 0 && line_ends[0]-1 == '\r') 
+	if (line_ends[1] > 0 && text[line_ends[1]-1] == '\r') 
 	{
 		is_linux_file = 0; //0 means DOS file
 		//printf("\n %d\n",is_linux_file); //for debug
-		printf("%s","This looks like a DOS file. DOS files are not supported. Exiting ...");
+		printf("%s","This looks like a DOS file. DOS files are not supported. Exiting ...\n");
+		exit(1);
 	}
 	
 	printf("%s",text);
