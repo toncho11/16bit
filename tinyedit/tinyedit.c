@@ -318,7 +318,8 @@ int main(int argc, char *argv[])
 	   else //add character and move text right
 	   {
 		 if (curr_X != 80)
-		 {  
+		 { 
+           //handles Y=1 correctly because Y0 = -1 and we get: -1 + curr_X = curr_X - 1  
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
 		   memcpy(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
 
@@ -327,6 +328,8 @@ int main(int argc, char *argv[])
 		   
 		   //add character
 		   text[start_text_pos] = curr_ch;
+		   
+		   //already increased by the loop, so the '\0' and set at the correct position
 		   text[line_ends[curr_Y]] = '\0'; //to be able to print and then it will be switched to \n 
 
 		   //print at new position
