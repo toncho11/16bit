@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 	{
 		is_linux_file = 0; //0 means DOS file
 		//printf("\n %d\n",is_linux_file); //for debug
-		printf("%s","This looks like a DOS file. DOS files are not supported. Exiting ...\n");
+		printf("%s","This looks like a DOS file. DOS files are not supported.\nUse: tr -d \'\\015\' < DOS-file > UNIX-file\nExiting ...\n");
 		exit(1);
 	}
 	
