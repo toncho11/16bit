@@ -114,11 +114,18 @@ int main(int argc, char *argv[])
 		if (text[i] == '\n')
 		{
 			line_ends[line] = i;
-			//printf("\n %d",line_ends[line]); //for debug
+			//printf("\n %d %d",line, line_ends[line]); //for debug
 			line++;
-			
 		}
 	}
+	
+	//in case there is no '\n' at the end of the file, we need to set the line_ends here:
+	//printf("\n test: %d %d %d\n",line, line_ends[line - 1], text_size - 1); //for debug
+	if ( line_ends[line - 1] < text_size - 1 ) { line_ends[line] = text_size; line++; }
+	
+	//printf("\n test: %d \n",line_ends[15]); //for debug
+	
+	//return 0;
 	for (i = line; i< 26; i++) line_ends[i] = -1;
 	
 	if (line_ends[1] > 0 && text[line_ends[1]-1] == '\r') 
@@ -172,7 +179,8 @@ int main(int argc, char *argv[])
 					break;
 				case 'B': // code for arrow down - OK
 					
-					//printf("%s","B");					
+					//printf("%s","B");
+					
 					if (curr_Y<26 && line_ends[curr_Y+1] != -1)
 					{
 						//line below current one is shorter: we move down, but we also move right to the end of the next line
@@ -240,7 +248,7 @@ int main(int argc, char *argv[])
 			}
 	   }
 	   else 
-	   if (curr_ch == '\n' || curr_ch == '\r') // Handles "enter" , ubuntu works with \n and ELKS works with \r
+	   if (curr_ch == '\n') // Handles "enter"
 	   {
 		   //printf("%s", "enter");
 		   printf("%s", "\r\n");
@@ -311,7 +319,7 @@ int main(int argc, char *argv[])
 			fprintf(f, "\ntext size %d", text_size);
 			fprintf(f, "\nline1 %d", line_ends[1]);
 			fprintf(f, "\nline2 %d", line_ends[2]);
-			fprintf(f, "\nline3 %d", line_ends[12]);
+			fprintf(f, "\nline3 %d", line_ends[15]);
 			//end debug
 			
 			fclose(f);
@@ -320,6 +328,9 @@ int main(int argc, char *argv[])
 	   {
 		 if (curr_X != 80)
 		 { 
+	 
+	       //problem it does not handle if it is at the end of the file and the end is not enter
+		   
            //handles Y=1 correctly because Y0 = -1 and we get: -1 + curr_X = curr_X - 1  
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
 		   memmove(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
