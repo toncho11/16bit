@@ -21,6 +21,7 @@ int line_ends[26];
 int text_size = 0;
 int is_linux_file = 1; //only '\n'
 int buff_X = -1;
+int last_line = -1;
 
 void clear(void)
 {
@@ -126,6 +127,10 @@ int main(int argc, char *argv[])
 	//printf("\n test: %d \n",line_ends[15]); //for debug
 	
 	//return 0;
+	
+	//set last line
+	last_line = line - 1;
+	
 	for (i = line; i< 26; i++) line_ends[i] = -1;
 	
 	if (line_ends[1] > 0 && text[line_ends[1]-1] == '\r') 
@@ -251,17 +256,23 @@ int main(int argc, char *argv[])
 	   if (curr_ch == '\n') // Handles "enter"
 	   {
 		   //printf("%s", "enter");
-		   printf("%s", "\r\n");
+		   
+		   //move right buffer
+		   
+		   //clear screen
+		   
+		   //print new text
+		   
+		   //update all: line_ends, last_line, text size
+		   
+		   printf("%s", "\n");
 		   if (curr_Y<25) curr_Y = curr_Y + 1;
 		   curr_X = 1;
-		   
-		   gotoxy(1, 25);
-		   printf("[%d | %d]  ",curr_X,curr_Y);
-		   gotoxy(curr_X, curr_Y);
+  
 	   }
 	   else if (curr_ch == 127 || curr_ch == '\b') //detect backspace (127 on Ubuntu, '\b' on ELKS) and move text right
 	   {
-		 if (curr_X != 1)
+		 if (curr_X != 1) //normal deletion 
 		 { 
 		   int start_text_pos = line_ends[curr_Y-1] + curr_X;
 		   memmove(text + start_text_pos - 1, text + start_text_pos, text_size - start_text_pos);
@@ -288,10 +299,52 @@ int main(int argc, char *argv[])
 		   text_size--;
 		   text[text_size]='\0';
 		 }
-		 else
+		 else //X=1, we go up and we merge two lines, number of lines is reduced
 		 {
-		   int start_text_pos = line_ends[curr_Y-1];
-		   memmove(text + start_text_pos, text + start_text_pos, text_size - start_text_pos);
+		   if (curr_Y != 1)
+		   {
+			   int start_text_pos = line_ends[curr_Y-1];
+			   int size_appended_line = line_ends[curr_Y] - line_ends[curr_Y - 1] - 1;
+			   //delete all lines below
+			   //for (int i=curr_Y+1; i<=last_line; i++)
+			   //{
+				//   gotoxy(i,1);
+				//  printf("\x1b[2K");
+				//   //printf("%c[2K", 27); //\033[K") # Clear to the end of line, printf("\x1b[2K"); clear entire line
+			   //}
+			   
+			   printf("\033[J"); //Clear screen from cursor down 
+			   
+			   //go up at the end of previous line
+			   //printf("%d",line_ends[curr_Y-1]);
+			   curr_X = line_ends[curr_Y-1] - line_ends[curr_Y-2];
+			   curr_Y = curr_Y - 1;
+			   
+			   gotoxy(curr_X, curr_Y);
+			   //shift up
+			   memmove(text + start_text_pos, text + start_text_pos + 1, text_size - start_text_pos);
+
+//#ifdef TEST			   
+			   //print merged lines and the line filled with spaces
+			   printf("%s", text + start_text_pos);
+			   
+			   //move cursor to new position
+			   gotoxy(curr_X, curr_Y);
+			   
+			   //correct the text by removing the line filled with spaces (used for deletion of last line)
+			   text_size = text_size - 1; //- line_ends[last_line - 1]; //??????????????
+			   text[text_size] = '\0';
+			   
+			   //all line ends that follow must be shifted one character left
+			   //curr_Y = line_ends[curr_Y] + size of new text
+			   //all others are update + 1????
+			   
+			   line_ends[curr_Y] = start_text_pos + size_appended_line;
+			   for(int i=0; i< last_line - 1; i++) if (line_ends[i] != -1) line_ends[last_line]--;
+			   line_ends[last_line] = -1;
+			   last_line--;
+//#endif
+		   }
 		 }
 	   } //end backspace 
        else 
@@ -316,10 +369,13 @@ int main(int argc, char *argv[])
 			fprintf(f, "%s", text);
 			
 			//start debug 
+			fprintf(f, "%s", "|");
 			fprintf(f, "\ntext size %d", text_size);
+			//fprintf(f, "\nstrlen(text) %d", strlen(text));
+			fprintf(f, "\nlast line %d", last_line);
 			fprintf(f, "\nline1 %d", line_ends[1]);
 			fprintf(f, "\nline2 %d", line_ends[2]);
-			fprintf(f, "\nline3 %d", line_ends[15]);
+			fprintf(f, "\nline3 %d", line_ends[3]);
 			//end debug
 			
 			fclose(f);
