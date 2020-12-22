@@ -257,17 +257,39 @@ int main(int argc, char *argv[])
 	   {
 		   //printf("%s", "enter");
 		   
-		   //move right buffer
+		   int start_text_pos = line_ends[curr_Y - 1] + curr_X;
+		   int size_rest_of_line = line_ends[curr_Y] - curr_X; //??????????????????????????
 		   
-		   //clear screen
+		   //move right buffer
+		   memmove(text + start_text_pos + 1, text + start_text_pos, text_size - start_text_pos);
+		   
+		   //clear screen from cursor down 
+		   printf("\033[J"); 
 		   
 		   //print new text
+		   text[start_text_pos] = '\n';
+		   
+		   text_size++;
+		   text[text_size] = '\0';
+		   
+		   //print appended line + the trest of the text
+		   printf("%s", text + start_text_pos);
+		   
+		   //new position
+		   curr_Y = curr_Y + 1;
+		   curr_X = 1;
+		   gotoxy(curr_X, curr_Y);
 		   
 		   //update all: line_ends, last_line, text size
+		   last_line++;
+		   line_ends[curr_Y] = size_rest_of_line + 1; //?????????????????????????????????????????????????
 		   
-		   printf("%s", "\n");
-		   if (curr_Y<25) curr_Y = curr_Y + 1;
-		   curr_X = 1;
+		   for (int i=curr_Y + 1; i< 26; i++)
+			  if (line_ends[i] != -1) line_ends[i]--; 
+		   
+		   //printf("%s", "\n");
+		   //if (curr_Y<25) curr_Y = curr_Y + 1;
+		   //curr_X = 1;
   
 	   }
 	   else if (curr_ch == 127 || curr_ch == '\b') //detect backspace (127 on Ubuntu, '\b' on ELKS) and move text right
