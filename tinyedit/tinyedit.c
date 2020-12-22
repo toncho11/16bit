@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
 			}
 	   }
 	   else 
-	   if (curr_ch == '\n') // Handles "enter"
+	   if (curr_ch == '\n' || curr_ch == '\r') // Handles "enter", depending on configuration the terminal might be replacing the '\n' with '\r\n'
 	   {
 		   //printf("%s", "enter");
 		   
