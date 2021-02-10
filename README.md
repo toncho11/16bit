@@ -14,5 +14,5 @@ This is how to compile it for ELKS with cross compiler:
 ```$ ./cross/bin/ia16-elf-gcc tinyedit.c -o tinyedit -melks -mcmodel=small```
 
 ## Falling letters screensaver for DOS ##
-Full descriptionj is here: http://www.vcfed.org/forum/showthread.php?41244-Falling-letters-screensaver-for-DOS
+Full description is here: http://www.vcfed.org/forum/showthread.php?41244-Falling-letters-screensaver-for-DOS
 
